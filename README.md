@@ -1,24 +1,26 @@
-# koel [![Build Status](https://travis-ci.org/phanan/koel.svg?branch=master)](https://travis-ci.org/phanan/koel) [![OpenCollective](https://opencollective.com/koel/backers/badge.svg)](#backers) [![OpenCollective](https://opencollective.com/koel/sponsors/badge.svg)](#sponsors)
+# koel [![Build Status](https://travis-ci.org/phanan/koel.svg?branch=master)](https://travis-ci.org/phanan/koel) ![Code Quality](https://scrutinizer-ci.com/g/phanan/koel/badges/quality-score.png?b=master) [![codecov](https://codecov.io/gh/phanan/koel/branch/master/graph/badge.svg)](https://codecov.io/gh/phanan/koel) [![OpenCollective](https://opencollective.com/koel/backers/badge.svg)](#backers) [![OpenCollective](https://opencollective.com/koel/sponsors/badge.svg)](#sponsors)
 
 ![Showcase](http://koel.phanan.net/dist/img/showcase.png?2)
 
 ## Intro
 
-**Koel** (also stylized as **koel**, with a lowercase k) is a simple web-based personal audio streaming service written in [Vue](http://vuejs.org/) on the client side and [Laravel](http://laravel.com/) on the server side. Targeting web developers, Koel embraces some of the more modern web technologies – flexbox, audio, and drag-and-drop API to name a few – to do its job.
+**Koel** (also stylized as **koel**, with a lowercase k) is a simple web-based personal audio streaming service written in [Vue](http://vuejs.org/) on the client side and [Laravel](http://laravel.com/) on the server side. Targeting web developers, Koel embraces some of the more modern web technologies – CSS grid, audio, and drag-and-drop API to name a few – to do its job.
 
 ## Install and Upgrade Guide
 
-For system requirements, installation guides, and troubleshooting, head over to [Wiki](https://github.com/phanan/koel/wiki).
+For system requirements, installation/upgrade guides, troubleshooting etc., head over to the [Official Documentation](http://koel.phanan.net/docs).
 
-If you are upgrading, see [Releases](https://github.com/phanan/koel/releases) for guides corresponding to your version.
+## Contribute
 
-## Native App
+All contributions, big or small, are warmheartedly welcome! Please note, however, that if you want to work on a new feature, first open an issue to make sure it's something desired – doing this will greatly save time for all of us.
 
-An [electron](http://electron.atom.io/)-based desktop client, in its early days, is also available [here](https://github.com/phanan/koel-app).
+A quick and easy way to start hacking on koel is to open and run this repo in Gitpod, an online IDE with full Laravel support.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/phanan/koel)
 
 ## Backers
 
-Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/koel#backer)]
+[Support me on OpenCollective](https://opencollective.com/koel#backer) with a monthly donation and help me continue building Koel.
 
 <a href="https://opencollective.com/koel/backer/0/website" target="_blank"><img src="https://opencollective.com/koel/backer/0/avatar.svg"></a>
 <a href="https://opencollective.com/koel/backer/1/website" target="_blank"><img src="https://opencollective.com/koel/backer/1/avatar.svg"></a>
@@ -53,7 +55,15 @@ Support us with a monthly donation and help us continue our activities. [[Become
 
 ## Sponsors
 
-Become a sponsor and get your logo on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/koel#sponsor)]
+#### GitHub Sponsors
+
+* Eduardo San Martin Morote ([@posva](https://github.com/posva))
+* Nina Reynolds ([@cutecycle](https://github.com/cutecycle))
+* [You](https://github.com/users/phanan/sponsorship)?
+
+#### OpenCollective
+
+[Become a sponsor on OpenCollective](https://opencollective.com/koel#sponsor) and get your logo on our README on Github with a link to your site.
 
 <a href="https://opencollective.com/koel/sponsor/0/website" target="_blank"><img src="https://opencollective.com/koel/sponsor/0/avatar.svg"></a>
 <a href="https://opencollective.com/koel/sponsor/1/website" target="_blank"><img src="https://opencollective.com/koel/sponsor/1/avatar.svg"></a>

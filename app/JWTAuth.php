@@ -15,13 +15,13 @@ class JWTAuth extends BaseJWTAuth
      */
     public function __construct(JWTManager $manager, UserInterface $user, AuthInterface $auth, Request $request)
     {
-        return parent::__construct($manager, $user, $auth, $request);
+        parent::__construct($manager, $user, $auth, $request);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function parseToken($method = 'bearer', $header = 'authorization', $query = 'jwt-token')
+    public function parseToken($method = 'bearer', $header = 'authorization', $query = 'jwt-token'): BaseJWTAuth
     {
         return parent::parseToken($method, $header, $query);
     }

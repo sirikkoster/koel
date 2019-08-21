@@ -1,35 +1,41 @@
 language: php
 
-php:
-  - 5.6
-  - 7.0
+addons:
+  chrome: stable
 
-env:
-  APP_ENV: testing
-  CACHE_DRIVER: array
-  SESSION_DRIVER: array
-  QUEUE_DRIVER: sync
-  DB_CONNECTION: sqlite
-  APP_KEY: 16efa6c23c2e8c705826b0e66778fbe7
-  JWT_SECRET: ki8jSvMf5wFrlSRBAWcGbmAzBUJfc8p8
-  ADMIN_EMAIL: koel@example.com
-  ADMIN_NAME: Koel
-  ADMIN_PASSWORD: SoSecureK0el
-  LASTFM_API_KEY: foo
-  LASTFM_API_SECRET: bar
-  BROADCAST_DRIVER: log
+php:
+  - 7.1
+  - 7.2
+  - 7.3
+
+node_js:
+  - 10
 
 branches:
   - master
 
 install:
-  - . $HOME/.nvm/nvm.sh
-  - nvm install stable
-  - nvm use stable
-  - npm install
   - composer self-update
-  - composer install --prefer-source --no-interaction
+  - composer install --prefer-dist --no-interaction
+  - yarn
 
 script:
-  - phpunit
-  - npm test
+  # Backend
+  - composer coverage
+  # Cypress
+  - yarn cy
+
+cache:
+  directories:
+    - vendor/
+
+addons:
+  code_climate:
+    repo_token: e74dc85a4eeb025a067bde238175f44d9f6a9e544278c4c096a46b8467c5fb9f
+  apt:
+    packages:
+    - libgconf-2-4
+
+after_success:
+  - vendor/bin/test-reporter
+  - bash <(curl -s https://codecov.io/bash)

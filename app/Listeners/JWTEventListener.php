@@ -2,26 +2,17 @@
 
 namespace App\Listeners;
 
+use Illuminate\Events\Dispatcher;
+
 class JWTEventListener
 {
-    /**
-     * Handle user login events.
-     */
-    public function onValidUser($event)
+    public function onValidUser(Dispatcher $event): void
     {
         auth()->setUser($event->user);
     }
 
-    /**
-     * Register the listeners for the subscriber.
-     *
-     * @param Illuminate\Events\Dispatcher $events
-     */
-    public function subscribe($events)
+    public function subscribe(Dispatcher $events): void
     {
-        $events->listen(
-            'tymon.jwt.valid',
-            'App\Listeners\JWTEventListener@onValidUser'
-        );
+        $events->listen('tymon.jwt.valid', self::class.'@onValidUser');
     }
 }

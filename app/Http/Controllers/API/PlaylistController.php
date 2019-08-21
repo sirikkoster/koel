@@ -3,32 +3,63 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Requests\API\PlaylistStoreRequest;
+use App\Http\Requests\API\PlaylistSyncRequest;
 use App\Models\Playlist;
+use App\Repositories\PlaylistRepository;
+use App\Services\SmartPlaylistService;
+use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @group 4. Playlist management
+ */
 class PlaylistController extends Controller
 {
+    private $playlistRepository;
+    private $smartPlaylistService;
+
+    public function __construct(PlaylistRepository $playlistRepository, SmartPlaylistService $smartPlaylistService)
+    {
+        $this->playlistRepository = $playlistRepository;
+        $this->smartPlaylistService = $smartPlaylistService;
+    }
+
     /**
-     * Gets all playlists by the current user.
+     * Get current user's playlists.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @responseFile responses/playlist.index.json
+     *
+     * @return JsonResponse
      */
     public function index()
     {
-        return response()->json(Playlist::byCurrentUser()->orderBy('name')->with('songs')->get());
+        return response()->json($this->playlistRepository->getAllByCurrentUser());
     }
 
     /**
      * Create a new playlist.
      *
-     * @param PlaylistStoreRequest $request
+     * @bodyParam name string required Name of the playlist. Example: Sleepy Songs
+     * @bodyParam rules array An array of rules if creating a "smart playlist."
+     * @responseFile responses/playlist.store.json
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store(PlaylistStoreRequest $request)
     {
-        $playlist = auth()->user()->playlists()->create($request->only('name'));
-        $playlist->songs()->sync($request->input('songs', []));
+        /** @var Playlist $playlist */
+        $playlist = $request->user()->playlists()->create([
+            'name' => $request->name,
+            'rules' => $request->rules,
+        ]);
+
+        $songs = (array) $request->songs;
+
+        if ($songs) {
+            $playlist->songs()->sync($songs);
+        }
 
         $playlist->songs = $playlist->songs->pluck('id');
 
@@ -38,36 +69,39 @@ class PlaylistController extends Controller
     /**
      * Rename a playlist.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param Playlist                 $playlist
+     * @bodyParam name string required New name of the playlist. Example: Catchy Songs
+     * @responseFile responses/playlist.update.json
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function update(Request $request, Playlist $playlist)
     {
         $this->authorize('owner', $playlist);
 
-        $playlist->update($request->only('name'));
+        $playlist->update($request->only('name', 'rules'));
 
         return response()->json($playlist);
     }
 
     /**
-     * Sync a playlist with songs.
-     * Any songs that are not populated here will be removed from the playlist.
+     * Replace a playlist's content.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param Playlist                 $playlist
+     * Instead of adding or removing songs individually, a playlist's content is replaced entirely with an array of song IDs.
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @bodyParam songs array required An array of song IDs.
+     * @response []
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @throws AuthorizationException
+     *
+     * @return JsonResponse
      */
-    public function sync(Request $request, Playlist $playlist)
+    public function sync(PlaylistSyncRequest $request, Playlist $playlist)
     {
         $this->authorize('owner', $playlist);
+
+        abort_if($playlist->is_smart, 403, 'A smart playlist\'s content cannot be updated manually.');
 
         $playlist->songs()->sync((array) $request->songs);
 
@@ -75,14 +109,34 @@ class PlaylistController extends Controller
     }
 
     /**
+     * Get a playlist's songs.
+     *
+     * @response ["0146d01afb742b01f28ab8b556f9a75d", "c741133cb8d1982a5c60b1ce2a1e6e47", "..."]
+     *
+     * @throws AuthorizationException
+     *
+     * @return JsonResponse
+     */
+    public function getSongs(Playlist $playlist)
+    {
+        $this->authorize('owner', $playlist);
+
+        return response()->json(
+            $playlist->is_smart
+                ? $this->smartPlaylistService->getSongs($playlist)->pluck('id')
+                : $playlist->songs->pluck('id')
+        );
+    }
+
+    /**
      * Delete a playlist.
      *
-     * @param Playlist $playlist
+     * @response []
      *
-     * @throws \Exception
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws Exception
+     * @throws AuthorizationException
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function destroy(Playlist $playlist)
     {

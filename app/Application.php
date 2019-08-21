@@ -2,11 +2,8 @@
 
 namespace App;
 
-use Exception;
-use GuzzleHttp\Client;
 use Illuminate\Foundation\Application as IlluminateApplication;
 use InvalidArgumentException;
-use Log;
 
 /**
  * Extends \Illuminate\Foundation\Application to override some defaults.
@@ -18,7 +15,7 @@ class Application extends IlluminateApplication
      *
      * @link https://github.com/phanan/koel/releases
      */
-    const KOEL_VERSION = 'v3.5.4';
+    public const KOEL_VERSION = 'v3.8.0';
 
     /**
      * We have merged public path and base path.
@@ -34,25 +31,22 @@ class Application extends IlluminateApplication
      * Loads a revision'ed asset file, making use of gulp-rev
      * This is a copycat of L5's Elixir, but catered to our directory structure.
      *
-     * @param string $file
-     * @param string $manifestFile
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return string
+     * @throws InvalidArgumentException
      */
-    public function rev($file, $manifestFile = null)
+    public function rev(string $file, string $manifestFile = null): string
     {
         static $manifest = null;
 
-        $manifestFile = $manifestFile ?: $this->publicPath().'/public/build/rev-manifest.json';
+        $manifestFile = $manifestFile ?: public_path('public/mix-manifest.json');
 
         if ($manifest === null) {
             $manifest = json_decode(file_get_contents($manifestFile), true);
         }
 
         if (isset($manifest[$file])) {
-            return $this->staticUrl("public/build/{$manifest[$file]}");
+            return file_exists(public_path('public/hot'))
+                    ? "http://localhost:8080{$manifest[$file]}"
+                    : $this->staticUrl("public{$manifest[$file]}");
         }
 
         throw new InvalidArgumentException("File {$file} not defined in asset manifest.");
@@ -64,41 +58,11 @@ class Application extends IlluminateApplication
      * Otherwise, just use a full URL to the asset.
      *
      * @param string $name The additional resource name/path.
-     *
-     * @return string
      */
-    public function staticUrl($name = null)
+    public function staticUrl(?string $name = null): string
     {
         $cdnUrl = trim(config('koel.cdn.url'), '/ ');
 
         return $cdnUrl ? $cdnUrl.'/'.trim(ltrim($name, '/')) : trim(asset($name));
-    }
-
-    /**
-     * Get the latest version number of Koel from GitHub.
-     *
-     * @param Client $client
-     *
-     * @return string
-     */
-    public function getLatestVersion(Client $client = null)
-    {
-        if ($v = cache('latestKoelVersion')) {
-            return $v;
-        }
-
-        $client = $client ?: new Client();
-
-        try {
-            $v = json_decode($client->get('https://api.github.com/repos/phanan/koel/tags')->getBody())[0]->name;
-            // Cache for one day
-            cache(['latestKoelVersion' => $v], 1 * 24 * 60);
-
-            return $v;
-        } catch (Exception $e) {
-            Log::error($e);
-
-            return self::KOEL_VERSION;
-        }
     }
 }

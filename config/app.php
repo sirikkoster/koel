@@ -81,24 +81,9 @@ return [
     |
     */
 
-    'key' => env('APP_KEY', 'SomeRandomString'),
+    'key' => env('APP_KEY', 'SomeRandomStringWith32Characters'),
 
     'cipher' => 'AES-256-CBC',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Logging Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure the log settings for your application. Out of
-    | the box, Laravel uses the Monolog PHP logging library. This gives
-    | you a variety of powerful log handlers / formatters to utilize.
-    |
-    | Available Settings: "single", "daily", "syslog", "errorlog"
-    |
-    */
-
-    'log' => env('APP_LOG', 'single'),
 
     /*
     |--------------------------------------------------------------------------
@@ -138,10 +123,9 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
-        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Aws\Laravel\AwsServiceProvider::class,
+        Jackiedo\DotenvEditor\DotenvEditorServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -150,15 +134,14 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\MediaServiceProvider::class,
         App\Providers\MediaCacheServiceProvider::class,
         App\Providers\UtilServiceProvider::class,
-        App\Providers\LastfmServiceProvider::class,
         App\Providers\YouTubeServiceProvider::class,
         App\Providers\DownloadServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\iTunesServiceProvider::class,
-
+        App\Providers\StreamerServiceProvider::class,
+        App\Providers\ObjectStorageServiceProvider::class,
     ],
 
     /*
@@ -205,11 +188,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'DotenvEditor' => Jackiedo\DotenvEditor\Facades\DotenvEditor::class,
 
-        'Media' => App\Facades\Media::class,
-        'MediaCache' => App\Facades\MediaCache::class,
         'Util' => App\Facades\Util::class,
-        'Lastfm' => App\Facades\Lastfm::class,
         'YouTube' => App\Facades\YouTube::class,
         'Download' => App\Facades\Download::class,
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,

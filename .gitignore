@@ -10,6 +10,7 @@ Homestead.json
 db.mwb.bak
 bower_components
 /CHANGE
+koel.db
 
 ### Node ###
 # Logs
@@ -68,3 +69,15 @@ Temporary Items
 *.css.map
 
 /database/e2e.sqlite
+.nyc_output
+*.swp
+*.swo
+*~
+
+# Cypress
+cypress/screenshots
+cypress/videos
+
+/log
+coverage.xml
+.phpunit.result.cache
